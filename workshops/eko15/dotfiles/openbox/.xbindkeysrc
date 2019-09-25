@@ -1,0 +1,54 @@
+#####################
+### xbindkeys map ###
+#####################
+
+# NOTE: in order to use keycode names like XF86HomePage, the correct keyboard
+# layout should be set with `setxkbmap -model logidinovoedge`, otherwise it
+# may not be recognized. A failsafe method is to use scancodes directly, like
+# e.g. "m:0x0 + c:122" for XF86Search.
+
+
+### Power state
+
+# Sleep
+"ZZZ"
+	XF86Sleep
+
+
+
+### Multimedia
+
+# Sound
+"mixerctl outputs.master=+5"
+	XF86AudioRaiseVolume
+"mixerctl outputs.master=-5"
+	XF86AudioLowerVolume
+"mixerctl -t outputs.master.mute"
+	XF86AudioMute
+
+# Controls
+#""
+#	XF86AudioPrev
+#""
+#	XF86AudioStop
+#""
+#	XF86AudioPlay
+#""
+#	XF86AudioNext
+
+
+
+### Apps Launch
+
+# Firefox
+"firefox 2>/dev/null &"
+	XF86Search
+
+# 2nd button
+#"urxvt &"
+#	m:0x0 + c:236
+#	XF86Mail
+
+"xterm &"
+	XF86HomePage
+

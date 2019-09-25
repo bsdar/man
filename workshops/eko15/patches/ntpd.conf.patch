@@ -1,0 +1,9 @@
+--- /etc/ntpd.conf      Mon Aug 12 08:04:53 2019
++++ ./etc/ntpd.conf     Sun Sep 22 22:02:51 2019
+@@ -5,4 +5,4 @@
+ servers pool.ntp.org
+ server time.cloudflare.com
+ sensor *
+-constraints from "https://www.google.com"
++constraints from "https://www.wikipedia.org"
+

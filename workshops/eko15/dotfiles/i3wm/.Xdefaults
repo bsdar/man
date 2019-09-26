@@ -1,0 +1,21 @@
+! $OpenBSD: dot.Xdefaults,v 1.3 2014/07/10 10:22:59 jasper Exp $
+XTerm.loginShell:true
+URxvt.termName: rxvt-256color
+!URxvt.geometry: 400x30 
+URxvt.buffered: true
+URxvt.background: black
+URxvt.foreground: white
+URxvt.cursorColor: yellow
+URxvt.underlineColor: green
+URxvt.font: xft:Terminus:bold:pixelsize=10:antialias=false
+
+!------------
+!True Transparency
+!------------
+urxvt.depth: 32
+urxvt.background: rgba:1111/1111/1111/dddd
+
+Urxvt.secondaryScroll:  true    # Enable Shift-PageUp/Down in screen
+URxvt.perl-ext-common:  default,tabbed
+URxvt.scrollBar: false
+URxvt.scrollstyle:plain

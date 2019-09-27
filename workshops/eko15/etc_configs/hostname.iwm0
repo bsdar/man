@@ -1,0 +1,2 @@
+join "miredwifi" wpakey "miclave123" mode 11g
+dhcp

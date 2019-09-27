@@ -1,0 +1,3 @@
+apmd_flags=-H
+hotplugd_flags=
+xenodm_flags=

@@ -1,0 +1,12 @@
+--- /etc/X11/xenodm/Xsetup_0    Mon Aug  5 02:35:23 2019
++++ ./etc/X11/xenodm/Xsetup_0   Sun Sep 22 22:56:26 2019
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # $OpenBSD: Xsetup_0,v 1.6 2019/06/29 13:33:06 espie Exp $
+
+-xconsole -geometry 480x130-0-0 -daemon -notify -verbose -fn fixed -exitOnFail
++xsetroot -solid black
+
+ #  install package openbsd-backgrounds
+ #  then uncomment:
+

@@ -1,0 +1,30 @@
+unlet! skip_defaults_vim
+source $VIMRUNTIME/defaults.vim
+
+set nu
+set tabstop=4
+set shiftwidth=4
+set hlsearch
+set ignorecase
+set hidden
+set autoread
+set cursorline 
+set mouse=a
+syntax on
+
+" onedark theme
+" Use 24-bit (true-color) mode in Vim/Neovim
+if (has("nvim"))
+	let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+if (has("termguicolors"))
+	set termguicolors
+endif
+
+let g:onedark_color_overrides = {
+\ "black": {"gui": "#1d242c", "cterm": "235", "cterm16": "0" },
+\ "cursor_grey": {"gui": "#232934", "cterm": "235", "cterm16": "0" }
+\}
+
+colorscheme onedark
+" colorscheme slate

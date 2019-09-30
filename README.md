@@ -3,3 +3,4 @@ Manuales, tutoriales, guias (manuals, tutorials, guides) de la comunidad \*BSD A
 
 ## Workshops
 * [eko15](workshops/eko15/)
+* [Guía de instalación de OpenBSD en VirtualBox](install/)

@@ -7,13 +7,13 @@
 * Lugar (place): [Ekoparty security conference 2019](https://ekoparty.org) (eko15) en Ciudad Cultural Konex (Sarmiento 3131, Buenos Aires)
 * Speakers: ToscoSys & Anatoli
 * Ayudantes: Wen & Pablo Tesarrolo
-* [Fotos](xxx)
+* Fotos: próximamente!
 
 ## Material
 1. Slides
-   1. Parte 1: [Intro & setup inicial con FDE & firmware](20190827.md)
-   2. Parte 2.1: [Administración](20190827.md)
-   2. Parte 2.2: [i3wm](20190827.md)
+   1. Parte 1: [Intro & setup inicial con FDE & firmware](slides/parte_1.pdf)
+   2. Parte 2.1: [Administración](slides/parte_2.1_fundamentos.pdf)
+   2. Parte 2.2: [i3wm](slides/parte_2.2_i3wm.pdf)
    2. Parte 2.3: Openbox
    2. Parte 2.4: Compilación del kernel
    4. Auxiliar: arranque desde un pendrive físico en VMWare ([pdf](aux/vmware_pendrive.pdf), [md](aux/vmware_pendrive.md)) y VirtualBox ([pdf](aux/virtualbox_pendrive.pdf), [md](aux/virtualbox_pendrive.md))

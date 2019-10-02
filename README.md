@@ -1,6 +1,8 @@
 # man
-Manuales, tutoriales, guias (manuals, tutorials, guides) de la comunidad \*BSD Argentina (BSDar)
+Manuales, presentaciones, cheatsheets (manuals, presentations, cheatsheets) de la comunidad \*BSD Argentina (BSDar)
 
-## Workshops
-* [eko15](workshops/eko15/)
-* [Guía de instalación de OpenBSD en VirtualBox](install/)
+## Workshops/presentaciones
+* [2019-09-27] Workshop [OpenBSD: una workstation segura](workshops/eko15/README.md) @ Ekoparty #15
+
+## Cheatsheets
+* [vim graphical cheat sheet](cheatsheets/vim.gif)

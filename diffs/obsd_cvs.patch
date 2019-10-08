@@ -1,0 +1,250 @@
+Index: man/cvs.1
+===================================================================
+RCS file: /cvs/src/gnu/usr.bin/cvs/man/cvs.1,v
+retrieving revision 1.13
+diff -u -p -r1.13 cvs.1
+--- man/cvs.1	10 Jan 2019 00:41:40 -0000	1.13
++++ man/cvs.1	8 Oct 2019 05:13:06 -0000
+@@ -1922,11 +1922,7 @@ Pathname to the repository (
+ of the
+ .SM CVSROOT
+ environment variable if the environment variable is not
+-set.  A warning message will be issued when the contents of this
+-file and the
+-.SM CVSROOT
+-environment variable differ.  The file may be over-ridden by the
+-presence of the
++set.  The file may be over-ridden by the presence of the
+ .SM CVS_IGNORE_REMOTE_ROOT
+ environment variable.
+ .TP
+Index: src/main.c
+===================================================================
+RCS file: /cvs/src/gnu/usr.bin/cvs/src/main.c,v
+retrieving revision 1.43
+diff -u -p -r1.43 main.c
+--- src/main.c	10 Jan 2019 00:41:40 -0000	1.43
++++ src/main.c	8 Oct 2019 05:13:07 -0000
+@@ -385,7 +385,7 @@ main (argc, argv)
+     char *cp, *end;
+     const struct cmd *cm;
+     int c, err = 0;
+-    int tmpdir_update_env, cvs_update_env;
++    int tmpdir_update_env;
+     int free_CVSroot = 0;
+     int free_Editor = 0;
+     int free_Tmpdir = 0;
+@@ -439,7 +439,6 @@ main (argc, argv)
+      * Query the environment variables up-front, so that
+      * they can be overridden by command line arguments
+      */
+-    cvs_update_env = 0;
+     tmpdir_update_env = *Tmpdir;	/* TMPDIR_DFLT must be set */
+     if ((cp = getenv (TMPDIR_ENV)) != NULL)
+     {
+@@ -453,10 +452,7 @@ main (argc, argv)
+     else if ((cp = getenv (EDITOR3_ENV)) != NULL)
+ 	Editor = cp;
+     if ((cp = getenv (CVSROOT_ENV)) != NULL)
+-    {
+ 	CVSroot = cp;
+-	cvs_update_env = 0;		/* it's already there */
+-    }
+     if (getenv (CVSREAD_ENV) != NULL)
+ 	cvswrite = 0;
+     if (getenv (CVSREADONLYFS_ENV)) {
+@@ -577,7 +573,6 @@ Copyright (c) 1989-2001 Brian Berliner, 
+ 		    free (CVSroot);
+ 		CVSroot = xstrdup (optarg);
+ 		free_CVSroot = 1;
+-		cvs_update_env = 1;	/* need to update environment */
+ 		break;
+ 	    case 'H':
+ 	        help = 1;
+@@ -829,18 +824,14 @@ Copyright (c) 1989-2001 Brian Berliner, 
+ 
+ 		/* -d overrides CVS/Root, so don't give an error if the
+ 		   latter points to a nonexistent repository.  */
+-		&& CVSroot_cmdline == NULL)
++		&& CVSroot_cmdline == NULL && CVSroot == NULL)
+ 	    {
+ 		CVSADM_Root = Name_Root((char *) NULL, (char *) NULL);
+ 	    }
+ 
+ 	    if (CVSADM_Root != NULL)
+ 	    {
+-		if (CVSroot == NULL || !cvs_update_env)
+-		{
+ 		    CVSroot = CVSADM_Root;
+-		    cvs_update_env = 1;	/* need to update environment */
+-		}
+ 	    }
+ 
+ 	    /* Now we've reconciled CVSROOT from the command line, the
+@@ -965,24 +956,6 @@ Copyright (c) 1989-2001 Brian Berliner, 
+ 		    free (path);
+ 		}
+ 
+-#ifdef HAVE_PUTENV
+-		/* Update the CVSROOT environment variable if necessary. */
+-		/* FIXME (njc): should we always set this with the CVSROOT from the command line? */
+-		if (cvs_update_env)
+-		{
+-		    static char *prev;
+-		    char *env;
+-		    env = xmalloc (strlen (CVSROOT_ENV) + strlen (CVSroot)
+-				   + 1 + 1);
+-		    (void) sprintf (env, "%s=%s", CVSROOT_ENV, CVSroot);
+-		    (void) putenv (env);
+-		    /* do not free env yet, as putenv has control of it */
+-		    /* but do free the previous value, if any */
+-		    if (prev != NULL)
+-			free (prev);
+-		    prev = env;
+-		}
+-#endif
+ 	    }
+ 	
+ 	    /* Parse the CVSROOT/config file, but only for local.  For the
+Index: src/recurse.c
+===================================================================
+RCS file: /cvs/src/gnu/usr.bin/cvs/src/recurse.c,v
+retrieving revision 1.5
+diff -u -p -r1.5 recurse.c
+--- src/recurse.c	28 Sep 2001 23:26:33 -0000	1.5
++++ src/recurse.c	8 Oct 2019 05:13:07 -0000
+@@ -154,28 +154,6 @@ start_recursion (fileproc, filesdoneproc
+     {
+ 	int just_subdirs = (which & W_LOCAL) && !isdir (CVSADM);
+ 
+-#ifdef CLIENT_SUPPORT
+-	if (!just_subdirs
+-	    && CVSroot_cmdline == NULL
+-	    && current_parsed_root->isremote)
+-	{
+-	    char *root = Name_Root (NULL, update_dir);
+-	    if (root && strcmp (root, current_parsed_root->original) != 0)
+-		/* We're skipping this directory because it is for
+-		   a different root.  Therefore, we just want to
+-		   do the subdirectories only.  Processing files would
+-		   cause a working directory from one repository to be
+-		   processed against a different repository, which could
+-		   cause all kinds of spurious conflicts and such.
+-
+-		   Question: what about the case of "cvs update foo"
+-		   where we process foo/bar and not foo itself?  That
+-		   seems to be handled somewhere (else) but why should
+-		   it be a separate case?  Needs investigation...  */
+-		just_subdirs = 1;
+-	    free (root);
+-	}
+-#endif
+ 
+ 	/*
+ 	 * There were no arguments, so we'll probably just recurse. The
+@@ -554,57 +532,6 @@ do_recursion (frame)
+ 	server_pause_check();
+ #endif
+ 
+-    /* Check the value in CVSADM_ROOT and see if it's in the list.  If
+-       not, add it to our lists of CVS/Root directories and do not
+-       process the files in this directory.  Otherwise, continue as
+-       usual.  THIS_ROOT might be NULL if we're doing an initial
+-       checkout -- check before using it.  The default should be that
+-       we process a directory's contents and only skip those contents
+-       if a CVS/Root file exists. 
+-
+-       If we're running the server, we want to process all
+-       directories, since we're guaranteed to have only one CVSROOT --
+-       our own.  */
+-
+-    if (
+-	/* If -d was specified, it should override CVS/Root.
+-
+-	   In the single-repository case, it is long-standing CVS behavior
+-	   and makes sense - the user might want another access method,
+-	   another server (which mounts the same repository), &c.
+-
+-	   In the multiple-repository case, -d overrides all CVS/Root
+-	   files.  That is the only plausible generalization I can
+-	   think of.  */
+-	CVSroot_cmdline == NULL
+-
+-#ifdef SERVER_SUPPORT
+-	&& ! server_active
+-#endif
+-	)
+-    {
+-	char *this_root = Name_Root ((char *) NULL, update_dir);
+-	if (this_root != NULL)
+-	{
+-	    if (findnode (root_directories, this_root) == NULL)
+-	    {
+-		/* Add it to our list. */
+-
+-		Node *n = getnode ();
+-		n->type = NT_UNKNOWN;
+-		n->key = xstrdup (this_root);
+-
+-		if (addnode (root_directories, n))
+-		    error (1, 0, "cannot add new CVSROOT %s", this_root);
+-	
+-	    }
+-	
+-	    process_this_directory =
+-		    (strcmp (current_parsed_root->original, this_root) == 0);
+-
+-	    free (this_root);
+-	}
+-    }
+ 
+     /*
+      * Fill in repository with the current repository
+@@ -989,47 +916,6 @@ but CVS uses %s for its own purposes; sk
+ 	free (cvsadmdir);
+     }
+ 
+-    /* Only process this directory if the root matches.  This nearly
+-       duplicates code in do_recursion. */
+-
+-    if (
+-	/* If -d was specified, it should override CVS/Root.
+-
+-	   In the single-repository case, it is long-standing CVS behavior
+-	   and makes sense - the user might want another access method,
+-	   another server (which mounts the same repository), &c.
+-
+-	   In the multiple-repository case, -d overrides all CVS/Root
+-	   files.  That is the only plausible generalization I can
+-	   think of.  */
+-	CVSroot_cmdline == NULL
+-
+-#ifdef SERVER_SUPPORT
+-	&& ! server_active
+-#endif
+-	)
+-    {
+-	char *this_root = Name_Root (dir, update_dir);
+-	if (this_root != NULL)
+-	{
+-	    if (findnode (root_directories, this_root) == NULL)
+-	    {
+-		/* Add it to our list. */
+-
+-		Node *n = getnode ();
+-		n->type = NT_UNKNOWN;
+-		n->key = xstrdup (this_root);
+-
+-		if (addnode (root_directories, n))
+-		    error (1, 0, "cannot add new CVSROOT %s", this_root);
+-
+-	    }
+-
+-	    process_this_directory = (strcmp (current_parsed_root->original, this_root) == 0);
+-
+-	    free (this_root);
+-	}
+-    }
+ 
+     /* call-back dir entry proc (if any) */
+     if (dir_return == R_SKIP_ALL)

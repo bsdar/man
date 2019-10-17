@@ -6,3 +6,6 @@ Manuales, presentaciones, cheatsheets (manuals, presentations, cheatsheets) de l
 
 ## Cheatsheets
 * [vim graphical cheat sheet](cheatsheets/vim.gif)
+
+## Guias de instalación
+* [Instalar OpenBSD desde un pendrive sobre VMware](guias/instalacion_openbsd_vmware/Instalación_guia_vmware.md)

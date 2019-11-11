@@ -6,7 +6,7 @@
 * Hora (time): 11:15 - 13:15
 * Lugar (place): [Ekoparty security conference 2019](https://ekoparty.org) (eko15) en Ciudad Cultural Konex (Sarmiento 3131, Buenos Aires)
 * Speakers: ToscoSys & Anatoli
-* Ayudantes: Wen & Pablo Tesarrolo
+* Ayudantes: Wen & Pablo Tessarolo
 * Fotos: próximamente!
 
 ## Material
